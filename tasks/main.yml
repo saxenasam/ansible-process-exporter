@@ -30,7 +30,7 @@
 
 - name: Download process_exporter binary to local folder
   get_url:
-    url: "https://github.com/ncabatoff/process-exporter/releases/download/v{{ process_exporter_version }}/process-exporter-{{ process_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
+    url: "https://github.com/saxenasam/ansible-process-exporter/blob/master/process-exporter-0.5.0.linux-amd64.tar.gz"
     dest: "/tmp/process-exporter-{{ process_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
     checksum: "sha256:{{ __process_exporter_checksum }}"
   register: _download_binary
