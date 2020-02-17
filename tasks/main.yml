@@ -1,6 +1,4 @@
 ---
-- include: preflight.yml
-
 - name: Create the Process Exporter group
   become: true
   group:
@@ -30,9 +28,8 @@
 
 - name: Download process_exporter binary to local folder
   get_url:
-    url: "https://github.com/saxenasam/ansible-process-exporter/raw/master/process-exporter-0.5.0.linux-amd64.tar.gz"
-    dest: "/tmp/process-exporter-{{ process_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
-    checksum: "sha256:{{ __process_exporter_checksum }}"
+    url: "https://s3-ap-southeast-1.amazonaws.com/zomato.infra/process-exporter/process-exporter-{{ process_exporter_version }}.linux-amd64.tar.gz"
+    dest: "/tmp/process-exporter-{{ process_exporter_version }}.linux-amd64.tar.gz"
   register: _download_binary
   until: _download_binary is succeeded
   retries: 5
@@ -42,16 +39,16 @@
 
 - name: Unpack process_exporter binary
   unarchive:
-    src: "/tmp/process-exporter-{{ process_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
+    src: "/tmp/process-exporter-{{ process_exporter_version }}.linux-amd64.tar.gz"
     dest: "/tmp"
-    creates: "/tmp/process-exporter-{{ process_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/process-exporter"
+    creates: "/tmp/process-exporter-{{ process_exporter_version }}.linux-amd64/process-exporter"
   delegate_to: localhost
   check_mode: false
 
 - name: Propagate process-exporter binaries
   become: true
   copy:
-    src: "/tmp/process-exporter-{{ process_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/process-exporter"
+    src: "/tmp/process-exporter-{{ process_exporter_version }}.linux-amd64/process-exporter"
     dest: "/usr/local/bin/process-exporter"
     mode: 0755
     owner: root
@@ -68,6 +65,7 @@
     owner: root
     group: "{{ __process_exporter_group }}"
     mode: 0640
+    backup: yes
   notify:
     - restart process exporter
 #  when: not ansible_check_mode

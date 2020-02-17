@@ -1,7 +1,4 @@
 galaxy_info:
-  author: Michał Czuba
-  description: Ansible role for installing process-exporter for Prometheus.
-  company: CodiLime
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
